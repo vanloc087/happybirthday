@@ -1019,7 +1019,12 @@ function goTo(n) {
   setTimeout(() => {
     const target = document.getElementById('s' + n);
     if (target) target.classList.add('active');
-    if (n === 3) initS3();
+    if (n === 3) {
+      // Tắt nhạc nền — Happy Birthday sẽ phát bên trong initS3()
+      bgMusic.pause();
+      bgMusic.currentTime = 0;
+      initS3();
+    }
   }, 60);
 }
 

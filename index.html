@@ -431,8 +431,8 @@
     }
 
     @keyframes bfly-fly {
-      0%   { transform: rotateX(90deg) rotate(calc(var(--random) * 360deg))          translateX(var(--radius, 130px)) translateZ(-35vh); }
-      100% { transform: rotateX(90deg) rotate(calc(var(--random) * 360deg - 720deg)) translateX(var(--radius, 130px)) translateZ(35vh); }
+      0%   { transform: rotateX(90deg) rotate(calc(var(--random) * 360deg))          translateX(var(--radius)) translateZ(-28vh); }
+      100% { transform: rotateX(90deg) rotate(calc(var(--random) * 360deg - 720deg)) translateX(var(--radius)) translateZ(28vh); }
     }
     @keyframes bfly-flapB {
       from { rotate: y 15deg;  }
@@ -1036,24 +1036,26 @@ const hintEl    = document.getElementById('hint-text');
   The heart lives roughly in the vertical middle of the screen to avoid
   the title at top and hint at bottom.
 */
+// Toạ độ tính cho iPhone 390x844 — tim rộng ~234px, cao ~447px, tâm giữa màn
+// Tự scale theo bất kỳ màn nào nhờ dùng fraction 0–1
 const STAR_FRACS = [
-  [0.50, 0.72],  //  1 – bottom tip
-  [0.63, 0.62],  //  2 – lower right
-  [0.72, 0.50],  //  3 – right side
-  [0.72, 0.36],  //  4 – upper right
-  [0.63, 0.26],  //  5 – right hump top
-  [0.54, 0.32],  //  6 – centre-right V
+  [0.50, 0.78],  //  1 – bottom tip
+  [0.66, 0.66],  //  2 – lower right
+  [0.80, 0.52],  //  3 – right side
+  [0.80, 0.37],  //  4 – upper right
+  [0.68, 0.25],  //  5 – right hump top
+  [0.57, 0.31],  //  6 – centre-right V
   [0.50, 0.37],  //  7 – centre V dip
-  [0.46, 0.32],  //  8 – centre-left V
-  [0.37, 0.26],  //  9 – left hump top
-  [0.28, 0.36],  // 10 – upper left
-  [0.28, 0.50],  // 11 – left side
-  [0.37, 0.62],  // 12 – lower left
+  [0.43, 0.31],  //  8 – centre-left V
+  [0.32, 0.25],  //  9 – left hump top
+  [0.20, 0.37],  // 10 – upper left
+  [0.20, 0.52],  // 11 – left side
+  [0.34, 0.66],  // 12 – lower left
 ];
 const STAR_COUNT = STAR_FRACS.length;
 
 const R_STAR      = 0.25; // constellation dot (near-point)
-const R_HIT       = 32;   // hit-test radius (generous for mobile)
+const R_HIT       = 44;   // hit-test radius (generous for mobile)
 
 let starPos      = [];   // {x, y} computed from fracs
 let startIdx     = -1;   // index of first tapped star
@@ -1601,22 +1603,24 @@ const BFLY_GROUPS = [
 ];
 
 // 15 con bướm — 3 con mỗi màu, click cùng màu → cùng message
+// radius tính theo vw để tự scale theo màn hình
+const _vw = window.innerWidth / 100;
 const BFLY_DATA = [
-  { group:0, random:0.734, radius:170 },
-  { group:0, random:0.421, radius:220 },
-  { group:0, random:0.612, radius:140 },
-  { group:1, random:0.182, radius:200 },
-  { group:1, random:0.853, radius:160 },
-  { group:1, random:0.375, radius:240 },
-  { group:2, random:0.921, radius:150 },
-  { group:2, random:0.554, radius:210 },
-  { group:2, random:0.293, radius:180 },
-  { group:3, random:0.671, radius:230 },
-  { group:3, random:0.148, radius:165 },
-  { group:3, random:0.487, radius:195 },
-  { group:4, random:0.832, radius:175 },
-  { group:4, random:0.316, radius:215 },
-  { group:4, random:0.594, radius:155 },
+  { group:0, random:0.734, radius: 30*_vw },
+  { group:0, random:0.421, radius: 22*_vw },
+  { group:0, random:0.612, radius: 26*_vw },
+  { group:1, random:0.182, radius: 28*_vw },
+  { group:1, random:0.853, radius: 20*_vw },
+  { group:1, random:0.375, radius: 24*_vw },
+  { group:2, random:0.921, radius: 25*_vw },
+  { group:2, random:0.554, radius: 32*_vw },
+  { group:2, random:0.293, radius: 18*_vw },
+  { group:3, random:0.671, radius: 27*_vw },
+  { group:3, random:0.148, radius: 21*_vw },
+  { group:3, random:0.487, radius: 29*_vw },
+  { group:4, random:0.832, radius: 23*_vw },
+  { group:4, random:0.316, radius: 31*_vw },
+  { group:4, random:0.594, radius: 19*_vw },
 ];
 
 let s3Interval = null; // không dùng nữa nhưng giữ để stopS3Float không lỗi
@@ -1631,7 +1635,7 @@ function buildButterflies() {
     const wrap = document.createElement('div');
     wrap.className = 'butterfly';
     wrap.style.cssText =
-      `--color:${grp.color}; --random:${bd.random}; --radius:${bd.radius}px;`;
+      `--color:${grp.color}; --random:${bd.random}; --radius:${Math.round(bd.radius)}px;`;
 
     // Label tên
     const label = document.createElement('div');

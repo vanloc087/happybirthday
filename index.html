@@ -852,13 +852,28 @@ document.addEventListener('click',      startBg, { once: true });
 document.addEventListener('touchstart', startBg, { once: true });
 
 function playHappyBirthday() {
-  // Giảm nhạc nền, phát happy birthday
-  bgMusic.volume = 0.1;
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
   hbMusic.currentTime = 0;
-  hbMusic.play().catch(() => {});
+
+  // Khi hết Happy Birthday → bật lại nhạc nền
   hbMusic.addEventListener('ended', () => {
     bgMusic.volume = 0.38;
+    bgMusic.play().catch(() => {});
   }, { once: true });
+
+  // Dùng Promise để chắc chắn play được dù browser block autoplay
+  const p = hbMusic.play();
+  if (p !== undefined) {
+    p.catch(() => {
+      // Nếu bị block, retry khi user chạm/click tiếp theo
+      const retry = () => {
+        hbMusic.play().catch(() => {});
+      };
+      document.addEventListener('touchstart', retry, { once: true });
+      document.addEventListener('click',      retry, { once: true });
+    });
+  }
 }
 
 // ════════════════════════════════════════════════════════════
